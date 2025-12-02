@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard Tools - Clean Security Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-soft: #F8F4F0;
+            --primary-rose: #F4C2C2;
+            --primary-mint: #B8E6B8;
+            --primary-honey: #FFE5A0;
+            --text-dark: #2D3748;
+            --text-medium: #4A5568;
+            --text-light: #718096;
+            --accent-pink: #FFB6C1;
+            --accent-blue: #B8D4E3;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-soft) 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .clean-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(244, 194, 194, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .clean-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .clean-input, .clean-textarea {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .clean-input:focus, .clean-textarea:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary-rose);
+            box-shadow: 0 0 0 4px rgba(244, 194, 194, 0.1);
+        }
+        
+        .clean-button {
+            background: linear-gradient(135deg, var(--primary-rose), var(--accent-pink));
+            border: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .clean-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(244, 194, 194, 0.4);
+        }
+        
+        .clean-button:active {
+            transform: translateY(0);
+        }
+        
+        .analysis-safe {
+            background: linear-gradient(135deg, var(--primary-mint), #A8D8A8);
+            color: #2D5016;
+        }
+        
+        .analysis-warning {
+            background: linear-gradient(135deg, var(--primary-honey), #F5D5A8);
+            color: #8B5A00;
+        }
+        
+        .analysis-danger {
+            background: linear-gradient(135deg, var(--primary-rose), #E8A8A8);
+            color: #7A1E1E;
+        }
+        
+        .mascot-thinking {
+            animation: gentle-bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .nav-link {
+            color: var(--text-medium);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(244, 194, 194, 0.1);
+            color: var(--text-dark);
+        }
+        
+        .nav-link.active {
+            background: var(--primary-rose);
+            color: white;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-rose), var(--accent-pink));
+            height: 6px;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-dot {
+            position: absolute;
+            background: rgba(244, 194, 194, 0.1);
+            border-radius: 50%;
+            animation: float-gentle 8s ease-in-out infinite;
+        }
+        
+        @keyframes float-gentle {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-dot" style="width: 8px; height: 8px; left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-dot" style="width: 12px; height: 12px; left: 80%; top: 30%; animation-delay: 2s;"></div>
+        <div class="floating-dot" style="width: 6px; height: 6px; left: 60%; top: 60%; animation-delay: 4s;"></div>
+        <div class="floating-dot" style="width: 10px; height: 10px; left: 20%; top: 80%; animation-delay: 6s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="relative z-50 p-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="mascot-container">
+                    <img src="resources/teddy-guardian.png" alt="PhishGuard" class="w-12 h-12 mascot-thinking">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800" style="font-family: 'Quicksand', sans-serif;">PhishGuard</h1>
+            </div>
+            <div class="flex space-x-2">
+                <a href="clean-index.html" class="nav-link">Dashboard</a>
+                <a href="clean-tools.html" class="nav-link active">Tools</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <section class="text-center mb-12">
+            <div class="clean-card rounded-3xl p-8">
+                <div class="flex items-center justify-center mb-6">
+                    <img src="resources/panda-detective.png" alt="Panda Detective" class="w-20 h-20 mascot-thinking">
+                </div>
+                <h2 class="text-4xl font-bold text-gray-800 mb-4" style="font-family: 'Quicksand', sans-serif;">
+                    Advanced Security Tools
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Professional-grade security analysis with intuitive interface and clear results.
+                </p>
+            </div>
+        </section>
+
+        <!-- Tools Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Email Analyzer -->
+            <div class="clean-card rounded-3xl p-8">
+                <div class="flex items-center mb-6">
+                    <div class="tool-icon bg-blue-100 text-blue-600">📧</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Email Analyzer</h3>
+                        <p class="text-sm text-gray-600">Comprehensive email security analysis</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Paste email content:</label>
+                    <textarea 
+                        id="emailInput"
+                        placeholder="Paste your email content here for analysis..."
+                        class="clean-textarea w-full h-32 p-4 rounded-xl resize-none focus:outline-none"
+                    ></textarea>
+                </div>
+                
+                <button 
+                    id="analyzeEmailBtn"
+                    class="clean-button w-full py-3 rounded-xl font-semibold"
+                >
+                    🔍 Analyze Email
+                </button>
+                
+                <div id="emailResults" class="mt-6 hidden">
+                    <div class="analysis-warning rounded-2xl p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="resources/panda-detective.png" alt="Detective Panda" class="w-10 h-10 mr-3">
+                            <div>
+                                <h4 class="text-lg font-bold">⚠️ Suspicious Email Detected</h4>
+                                <p class="text-sm opacity-90">Multiple phishing indicators found</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <span class="mr-2">🚨</span>
+                                <span>Urgent language detected</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="mr-2">🔗</span>
+                                <span>Suspicious link patterns</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="mr-2">✉️</span>
+                                <span>Sender address mismatch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Website Analyzer -->
+            <div class="clean-card rounded-3xl p-8">
+                <div class="flex items-center mb-6">
+                    <div class="tool-icon bg-green-100 text-green-600">🌐</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Website Analyzer</h3>
+                        <p class="text-sm text-gray-600">Complete website security assessment</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Enter website URL:</label>
+                    <input 
+                        type="url" 
+                        id="websiteInput"
+                        placeholder="https://example.com"
+                        class="clean-input w-full p-4 rounded-xl focus:outline-none"
+                    >
+                </div>
+                
+                <button 
+                    id="analyzeWebsiteBtn"
+                    class="clean-button w-full py-3 rounded-xl font-semibold"
+                >
+                    🔒 Check Security
+                </button>
+                
+                <div id="websiteResults" class="mt-6 hidden">
+                    <div class="analysis-safe rounded-2xl p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="resources/teddy-guardian.png" alt="Guardian Teddy" class="w-10 h-10 mr-3">
+                            <div>
+                                <h4 class="text-lg font-bold">✅ Website is Secure</h4>
+                                <p class="text-sm opacity-90">All security checks passed</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="text-center">
+                                <div class="text-lg mb-1">🔒</div>
+                                <div>Valid SSL</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg mb-1">📅</div>
+                                <div>5+ Years Old</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg mb-1">⭐</div>
+                                <div>Good Reputation</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg mb-1">🛡️</div>
+                                <div>No Malware</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced URL Analyzer -->
+        <div class="clean-card rounded-3xl p-8 mb-12">
+            <div class="flex items-center mb-6">
+                <div class="tool-icon bg-purple-100 text-purple-600">🔬</div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Advanced URL Analyzer</h3>
+                    <p class="text-sm text-gray-600">Deep threat intelligence and risk assessment</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Enter URL for analysis:</label>
+                    <input 
+                        type="url" 
+                        id="advancedUrlInput"
+                        placeholder="https://suspicious-site.example.com"
+                        class="clean-input w-full p-4 rounded-xl focus:outline-none"
+                    >
+                    <button 
+                        id="analyzeUrlBtn"
+                        class="clean-button w-full mt-4 py-3 rounded-xl font-semibold"
+                    >
+                        🔍 Deep Analysis
+                    </button>
+                </div>
+                
+                <div id="urlAnalysisProgress" class="hidden">
+                    <div class="text-center">
+                        <img src="resources/panda-detective.png" alt="Analyzing Panda" class="w-12 h-12 mx-auto mascot-thinking mb-3">
+                        <h4 class="text-lg font-semibold mb-2 text-gray-800">Analyzing URL...</h4>
+                        <div class="bg-gray-200 rounded-full h-2 mb-2">
+                            <div class="progress-bar w-0" id="analysisProgress"></div>
+                        </div>
+                        <p class="text-sm text-gray-600" id="analysisStatus">Checking domain reputation...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="urlAnalysisResults" class="mt-8 hidden">
+                <div class="analysis-danger rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <img src="resources/teddy-guardian.png" alt="Protective Teddy" class="w-12 h-12 mr-4">
+                        <div>
+                            <h4 class="text-xl font-bold">🚨 High Risk URL Detected</h4>
+                            <p class="text-sm opacity-90">Multiple threat indicators identified</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                        <div>
+                            <h5 class="font-semibold mb-3">Threat Indicators:</h5>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center">
+                                    <span class="mr-2">⚠️</span>
+                                    <span>Domain created recently</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="mr-2">🔗</span>
+                                    <span>Suspicious URL parameters</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="mr-2">🎭</span>
+                                    <span>Brand impersonation attempt</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold mb-3">Risk Assessment:</h5>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>Phishing Risk</span>
+                                    <span class="font-semibold">95%</span>
+                                </div>
+                                <div class="bg-red-200 rounded-full h-1.5">
+                                    <div class="bg-red-500 h-1.5 rounded-full" style="width: 95%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>Malware Risk</span>
+                                    <span class="font-semibold">78%</span>
+                                </div>
+                                <div class="bg-orange-200 rounded-full h-1.5">
+                                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-100 rounded-lg p-4">
+                        <p class="text-sm font-medium">🛡️ Recommendation: Avoid this website and report it to your security team.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="clean-card rounded-3xl p-8">
+            <div class="flex items-center mb-6">
+                <img src="resources/panda-wise.png" alt="Wise Panda" class="w-12 h-12 mr-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Security Best Practices</h3>
+                    <p class="text-sm text-gray-600">Essential tips for staying safe online</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-blue-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">🔍</div>
+                    <h4 class="font-semibold text-blue-800 mb-2">Verify URLs</h4>
+                    <p class="text-sm text-blue-700">Check for misspellings and suspicious domains before clicking links.</p>
+                </div>
+                <div class="bg-green-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">🔒</div>
+                    <h4 class="font-semibold text-green-800 mb-2">Use HTTPS</h4>
+                    <p class="text-sm text-green-700">Ensure websites use secure connections with valid SSL certificates.</p>
+                </div>
+                <div class="bg-yellow-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">⏰</div>
+                    <h4 class="font-semibold text-yellow-800 mb-2">Take Time</h4>
+                    <p class="text-sm text-yellow-700">Urgent messages are often phishing attempts - verify before acting.</p>
+                </div>
+                <div class="bg-purple-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">📧</div>
+                    <h4 class="font-semibold text-purple-800 mb-2">Check Senders</h4>
+                    <p class="text-sm text-purple-700">Verify email addresses and contact organizations directly if unsure.</p>
+                </div>
+                <div class="bg-pink-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">🛡️</div>
+                    <h4 class="font-semibold text-pink-800 mb-2">Stay Updated</h4>
+                    <p class="text-sm text-pink-700">Keep security software updated and use tools like PhishGuard.</p>
+                </div>
+                <div class="bg-indigo-50 rounded-2xl p-6">
+                    <div class="text-2xl mb-3">🤔</div>
+                    <h4 class="font-semibold text-indigo-800 mb-2">Trust Instincts</h4>
+                    <p class="text-sm text-indigo-700">If something feels off, it probably is - better safe than sorry.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 mt-16 py-8 text-center">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-center space-x-2 mb-4">
+                <img src="resources/teddy-guardian.png" alt="PhishGuard" class="w-6 h-6">
+                <span class="text-sm font-semibold text-gray-700">PhishGuard</span>
+            </div>
+            <p class="text-xs text-gray-500">© 2025 PhishGuard - Clean cybersecurity interface</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
